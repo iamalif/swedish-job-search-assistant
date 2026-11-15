@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Preferences{% endblock %}
+{% block body %}
+<p><a href="/">← Shortlist</a></p>
+<h1>Preferences</h1>
+{% if saved %}<p class="banner">Saved. The shortlist now uses these settings.</p>{% endif %}
+<p class="meta">Nothing here is permanent. Empty lists mean "no restriction". Excluded jobs stay recoverable on the shortlist.</p>
+<form method="post" class="job">
+  <p><label>Jobs that explicitly require Swedish<br>
+    <select name="swedish_required">{% for c in choices.swedish_required %}<option {{ 'selected' if c == p.swedish_required }}>{{ c }}</option>{% endfor %}</select></label>
+    <span class="meta">exclude = hide (recoverable) · flag = keep with a barrier · ignore</span></p>
+  <p>Accepted work models <span class="meta">(none ticked = all)</span><br>
+    {% for m in choices.work_models %}<label><input type="checkbox" name="work_models" value="{{ m }}" {{ 'checked' if m in p.work_models }}> {{ m }}</label> {% endfor %}</p>
+  <p><label>Employment types, comma separated <span class="meta">(substring of the source label; empty = all)</span><br>
+    <input name="employment_types" value="{{ p.employment_types|join(', ') }}" size="50"></label></p>
+  <p><label>Regions, comma separated <span class="meta">(e.g. Västra Götalands län; empty = anywhere in Sweden)</span><br>
+    <input name="regions" value="{{ p.regions|join(', ') }}" size="50"></label></p>
+  <p><label>Salary floor, SEK per month <span class="meta">(only applied where an ad states a monthly figure; blank = off)</span><br>
+    <input name="salary_floor" value="{{ p.salary_floor_sek_month or '' }}" inputmode="numeric"></label>
+    <label><input type="checkbox" name="exempt_internships" value="1" {{ 'checked' if p.salary_floor_exempt_internships }}> internships exempt</label></p>
+  <p><label>Track order, most preferred first <span class="meta">(ordering only)</span><br>
+    <input name="track_order" value="{{ p.track_order|join(', ') }}" size="50"></label></p>
+  <button type="submit">Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,91 @@
+{
+ "note": "Synthetic demo profile. Not a real person.",
+ "languages": {
+  "en": {
+   "level": "professional"
+  },
+  "sv": {
+   "level": "A1"
+  }
+ },
+ "degrees": [
+  {
+   "id": "demo.bsc",
+   "level": "bachelor",
+   "status": "completed",
+   "label": "Demo BSc"
+  },
+  {
+   "id": "demo.msc",
+   "level": "master",
+   "status": "ongoing",
+   "expected": "2028-01",
+   "label": "Demo MSc"
+  }
+ ],
+ "evidence": [
+  {
+   "id": "skill.python",
+   "label": "Python",
+   "skills": [
+    "python"
+   ],
+   "basis": "hands_on",
+   "where": "Demo coursework project"
+  },
+  {
+   "id": "skill.sql",
+   "label": "SQL",
+   "skills": [
+    "sql"
+   ],
+   "basis": "hands_on",
+   "where": "Demo database project"
+  },
+  {
+   "id": "skill.sklearn",
+   "label": "scikit-learn",
+   "skills": [
+    "scikit-learn",
+    "machine learning"
+   ],
+   "basis": "coursework",
+   "where": "Demo classification coursework",
+   "caveat": "Academic only"
+  },
+  {
+   "id": "skill.llm",
+   "label": "AI agents",
+   "skills": [
+    "llm",
+    "n8n"
+   ],
+   "basis": "managed",
+   "where": "Demo: managed an agent project",
+   "caveat": "Managed; engineers implemented"
+  },
+  {
+   "id": "skill.agile",
+   "label": "Scrum",
+   "skills": [
+    "scrum",
+    "agile"
+   ],
+   "basis": "hands_on",
+   "where": "Demo: ran sprints"
+  }
+ ],
+ "projects": [
+  {
+   "id": "proj.demo",
+   "title": "Demo classification study",
+   "kind": "academic",
+   "skills": [
+    "python",
+    "scikit-learn"
+   ],
+   "summary": "Synthetic demo project.",
+   "caveat": "Demo only; not deployed."
+  }
+ ]
+}

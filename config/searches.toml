@@ -1,0 +1,35 @@
+# Shareable search definitions. No personal data and NO geography/seniority filters:
+# preferences are unresolved, so nothing is hard-filtered at ingestion time.
+# These are exploratory tracks, not a permanent career choice.
+
+[[search]]
+track = "data"
+query = "data scientist"
+
+[[search]]
+track = "data"
+query = "data engineer"
+
+[[search]]
+track = "data"
+query = "data analyst"
+
+[[search]]
+track = "ai-automation"
+query = "machine learning engineer"
+
+[[search]]
+track = "ai-automation"
+query = "AI engineer"
+
+[[search]]
+track = "ai-automation"
+query = "automation engineer"
+
+[[search]]
+track = "delivery"
+query = "technical project manager"
+
+[[search]]
+track = "delivery"
+query = "engineering manager"

@@ -1,0 +1,29 @@
+[project]
+name = "jobassist"
+version = "0.1.0"
+description = "Personal Swedish job-search assistant (local, single user)"
+requires-python = ">=3.11"
+dependencies = ["fastapi", "jinja2", "uvicorn", "python-multipart"]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx"]
+embeddings = ["fastembed"]   # optional local semantic ranker (~170 MB runtime + model cache, ~756 MB observed on macOS arm64)
+
+[project.scripts]
+jobassist = "jobassist.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"jobassist.migrations" = ["*.sql"]
+"jobassist.web" = ["templates/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: hits the real JobTech API; run with -m live"]
+addopts = "-m 'not live'"

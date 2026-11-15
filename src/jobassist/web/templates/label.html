@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Label jobs{% endblock %}
+{% block body %}
+<h1>Label jobs <span class="meta">({{ done }} labelled)</span></h1>
+<p class="meta">Blind: the app's category is hidden here so it cannot bias you. Half the jobs are top-ranked, half random. Unlabelled jobs are never treated as "no". Aim for 60–100 varied jobs.</p>
+{% for x in queue %}{% set r = x.job %}
+<article class="job">
+  <h2>{{ r.title }}</h2>
+  <div class="meta">{{ r.employer or 'Unknown employer' }} · {{ r.municipality or 'Location not given' }} · <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">Open original ad</a></div>
+  <details><summary class="meta">Show ad text</summary><pre class="src">{{ (r.description_text or '')[:2500] }}</pre></details>
+  <form method="post" action="/feedback" class="filters">
+    <input type="hidden" name="source_id" value="{{ r.source_id }}"><input type="hidden" name="sample" value="{{ x.sample }}"><input type="hidden" name="category" value="{{ x.a.category }}"><input type="hidden" name="next" value="/label">
+    <select name="reason" aria-label="Reason"><option value="">reason (optional)</option>{% for y in reasons %}<option>{{ y }}</option>{% endfor %}</select>
+    <button name="label" value="worth_investigating">Worth investigating</button>
+    <button name="label" value="unsuitable">Unsuitable</button>
+    <button name="label" value="not_sure">Not sure</button>
+  </form>
+</article>
+{% else %}<p>Nothing left to label right now.</p>{% endfor %}
+{% endblock %}

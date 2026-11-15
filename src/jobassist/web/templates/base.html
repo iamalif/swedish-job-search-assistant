@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Job inbox{% endblock %}</title>
+<style>
+:root{--bg:#f7f7f5;--fg:#1c1c1a;--mut:#6b6b66;--card:#fff;--line:#e2e2dc;--acc:#1f5fbf;--warn-bg:#fff4d6;--warn-fg:#6b4a00;--ok:#1b7a3d;--bad:#a33}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ececE8;--mut:#9a9a92;--card:#1f1f1c;--line:#34342f;--acc:#7fb0ff;--warn-bg:#3a3000;--warn-fg:#ffd978;--ok:#6fd08a;--bad:#ff8a8a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:980px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:.2em 0 .6em} a{color:var(--acc)}
+.banner{background:var(--warn-bg);color:var(--warn-fg);padding:10px 14px;border-radius:8px;margin:0 0 14px}
+form.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+input,select,button{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+button{cursor:pointer}
+.job{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.job h2{font-size:1.05rem;margin:0 0 2px}
+.meta{color:var(--mut);font-size:.9rem}
+.tag{display:inline-block;font-size:.75rem;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-right:4px}
+.s-active{color:var(--ok)} .s-removed,.s-past_deadline{color:var(--bad)}
+pre.src{white-space:pre-wrap;word-wrap:break-word;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;font:inherit}
+.cat{font-size:.72rem;border-radius:6px;padding:1px 7px;border:1px solid var(--line);vertical-align:middle}.cat-Prioritise{color:var(--ok);border-color:var(--ok)}.cat-Significant-barrier,.cat-Excluded{color:var(--bad)}
+table{border-collapse:collapse;width:100%;font-size:.9rem}td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left;vertical-align:top}
+.nav{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;font-size:.95rem}
+.pager{display:flex;gap:12px;align-items:center;margin-top:12px}
+</style>
+</head>
+<body><main>
+<nav class="nav"><a href="/">Shortlist</a> <a href="/label">Label jobs</a> <a href="/saved">Saved</a> <a href="/evaluation">Evaluation</a> <a href="/preferences">Preferences</a></nav>
+{% if fresh.stale %}<div class="banner" role="alert"><strong>Data may be stale.</strong> {{ fresh.message }}</div>{% endif %}
+{% block body %}{% endblock %}
+</main></body></html>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Saved jobs{% endblock %}
+{% block body %}
+<h1>Saved jobs</h1>
+{% for x in rows %}{% set r = x.r %}
+<article class="job">
+  <h2><a href="/job/{{ r.source_id }}">{{ r.title }}</a> <span class="cat">{{ r.status }}</span></h2>
+  <div class="meta">{{ r.employer }} · {{ r.municipality }} · deadline {{ x.deadline }} · ad is <span class="s-{{ x.status_now }}">{{ x.status_now }}</span>
+    · saved {{ r.first_saved[:10] }} · status since {{ r.status_changed[:10] }}{% if r.applied_on %} · applied {{ r.applied_on }}{% endif %}</div>
+  {% if r.notes %}<p>{{ r.notes }}</p>{% endif %}
+  <a class="meta" href="{{ r.url }}" target="_blank" rel="noopener noreferrer">Open original ad</a> · <a class="meta" href="/job/{{ r.source_id }}/brief">Preparation brief</a>
+</article>
+{% else %}<p>Nothing saved yet. Open a job and choose "Save job".</p>{% endfor %}
+{% endblock %}

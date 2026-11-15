@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block body %}
+{% if refresh.running %}<meta http-equiv="refresh" content="4"><p class="banner">Refreshing from Platsbanken… this takes about a minute. The page reloads itself.</p>
+{% elif refresh.message %}<p class="meta">{{ refresh.message }}</p>{% endif %}
+<h1>Shortlist <span class="meta">({{ total }} {{ status }})</span></h1>
+{% if excluded_n and not category %}<p class="meta">{{ excluded_n }} active jobs are hidden by your preferences. <a href="?category=Excluded">Show them with reasons</a>.</p>{% endif %}
+<form class="filters" method="get">
+  <input type="search" name="q" value="{{ q }}" placeholder="Title, employer, place" aria-label="Search">
+  <select name="track" aria-label="Track"><option value="">All tracks</option>
+    {% for t in tracks %}<option value="{{ t }}" {{ 'selected' if t == track }}>{{ t }}</option>{% endfor %}</select>
+  <select name="category" aria-label="Category"><option value="">All (excl. Excluded)</option>
+    {% for c in categories %}<option value="{{ c }}" {{ 'selected' if c == category }}>{{ c }}</option>{% endfor %}</select>
+  <select name="status" aria-label="Status">
+    {% for s in ['active','past_deadline','removed','all'] %}<option value="{{ s }}" {{ 'selected' if s == status }}>{{ s }}</option>{% endfor %}</select>
+  {% if sem_ok %}<select name="sort" aria-label="Sort"><option value="rules" {{ 'selected' if sort != 'semantic' }}>Sort: rules (default)</option>
+    <option value="semantic" {{ 'selected' if sort == 'semantic' }}>Sort: semantic similarity (unvalidated)</option></select>{% endif %}
+  <button type="submit">Filter</button>
+</form>
+<form method="post" action="/refresh"><button {{ 'disabled' if refresh.running }}>Refresh jobs now</button></form>
+{% for x in rows %}{% set r = x.r %}
+<article class="job">
+  <h2><span class="cat cat-{{ x.a.category|replace(' ','-') }}">{{ x.a.category }}</span> <a href="/job/{{ r.source_id }}">{{ r.title }}</a></h2>
+  <div class="meta">{{ r.employer or 'Unknown employer' }} · {{ r.municipality or 'Location not given' }} ·
+    deadline {{ x.deadline }} · <span class="s-{{ x.status }}">{{ x.status }}</span></div>
+  <div class="meta">{{ x.why }}</div>
+  <div>{% for t in (r.tracks or '').split(',') if t %}<span class="tag">{{ t }}</span>{% endfor %}
+    <a class="meta" href="{{ r.url }}" target="_blank" rel="noopener noreferrer">Open original ad</a></div>
+</article>
+{% else %}<p>No jobs match. If this is a fresh install, run <code>jobassist refresh</code>.</p>{% endfor %}
+<div class="pager">
+  {% if page > 1 %}<a href="?q={{ q|urlencode }}&sort={{ sort }}&category={{ category|urlencode }}&track={{ track|urlencode }}&status={{ status }}&page={{ page-1 }}">← Previous</a>{% endif %}
+  <span class="meta">Page {{ page }} of {{ pages }}</span>
+  {% if page < pages %}<a href="?q={{ q|urlencode }}&sort={{ sort }}&category={{ category|urlencode }}&track={{ track|urlencode }}&status={{ status }}&page={{ page+1 }}">Next →</a>{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ r.title }}{% endblock %}
+{% block body %}
+<p><a href="/">← Inbox</a></p>
+<h1>{{ r.title }}</h1>
+<p class="meta">{{ r.employer or 'Unknown employer' }} · {{ r.municipality or 'Location not given' }} ·
+  <span class="s-{{ status }}">{{ status }}</span> · deadline {{ deadline }}</p>
+<p><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">Open original ad on Platsbanken</a></p>
+<p class="meta">First seen {{ r.first_seen }} · last seen {{ r.last_seen }} · text version {{ r.content_version }}
+  {% if r.removal_evidence %}· removal evidence: {{ r.removal_evidence }}{% endif %}</p>
+{% if dupes %}<p class="meta">Possible cross-posts (kept separate):
+  {% for d in dupes %}<a href="/job/{{ d.source_id }}">{{ d.source_id }}</a>{{ ', ' if not loop.last }}{% endfor %}</p>{% endif %}
+<div class="job">
+<form method="post" action="/feedback" class="filters"><input type="hidden" name="source_id" value="{{ r.source_id }}"><input type="hidden" name="category" value="{{ a.category }}">
+  <select name="label" aria-label="Your verdict">{% for l in labels %}<option {{ 'selected' if fb and fb.label == l }}>{{ l }}</option>{% endfor %}</select>
+  <select name="reason" aria-label="Reason"><option value="">reason (optional)</option>{% for x in reasons %}<option {{ 'selected' if fb and fb.reason == x }}>{{ x }}</option>{% endfor %}</select>
+  <input name="note" placeholder="note" value="{{ fb.note if fb else '' }}"><button>Save verdict</button></form>
+<form method="post" action="/job/{{ r.source_id }}/save" class="filters">
+  <select name="status" aria-label="Application status">{% for x in save_statuses %}<option {{ 'selected' if saved and saved.status == x }}>{{ x }}</option>{% endfor %}</select>
+  <input name="notes" placeholder="notes" value="{{ saved.notes if saved else '' }}"><input name="applied_on" type="date" value="{{ saved.applied_on if saved and saved.applied_on else '' }}" aria-label="Applied on">
+  <button>{{ 'Update saved job' if saved else 'Save job' }}</button>{% if saved %}<button name="remove" value="1">Remove</button>{% endif %}</form>
+<a href="/job/{{ r.source_id }}/brief">Preparation brief →</a></div>
+<h2>Assessment <span class="cat cat-{{ a.category|replace(' ','-') }}">{{ a.category }}</span></h2>
+<p class="meta">A decision aid ({{ a.version }}), not a hiring probability. Tracks: {{ a.tracks|join(', ') or '–' }}. Rule: {{ a.components.rule }}</p>
+{% if a.excluded_reason %}<p><strong>Excluded:</strong> {{ a.excluded_reason.text }}{% if a.excluded_reason.quote %}<br><em>“{{ a.excluded_reason.quote }}”</em>{% endif %}<br>
+  <span class="meta">Wrong? Correct the requirement below, or change your preferences.</span></p>{% endif %}
+{% for b in a.barriers %}<p><strong>Barrier:</strong> {{ b.text }}{% if b.quote %}<br><em>“{{ b.quote }}”</em>{% endif %}</p>{% endfor %}
+{% for u in a.unknowns %}<p><strong>Unknown:</strong> {{ u.text }}{% if u.quote %}<br><em>“{{ u.quote }}”</em>{% endif %}</p>{% endfor %}
+{% if a.matches %}<h3>Matches with your evidence</h3><table><tr><th>Asked</th><th>Ad says</th><th>Your evidence</th></tr>
+{% for m in a.matches %}<tr><td>{{ m.skill }} <span class="meta">({{ m.status }})</span></td><td><em>“{{ m.quote[:160] }}”</em></td>
+<td>{% for e in m.evidence %}{{ e.label }} <span class="meta">[{{ e.id }}, {{ e.basis }}{% if e.caveat %}; {{ e.caveat }}{% endif %}]</span><br>{% endfor %}</td></tr>{% endfor %}</table>{% endif %}
+{% if a.unmatched %}<h3>Asked, no evidence on file <span class="meta">(unknown, not "you lack it")</span></h3>
+<p>{% for m in a.unmatched %}{{ m.skill }} <span class="meta">({{ m.status }})</span>{{ ', ' if not loop.last }}{% endfor %}</p>{% endif %}
+<h3>Extracted requirements <span class="meta">(correct anything wrong)</span></h3>
+<table><tr><th>Type</th><th>Status</th><th>Quote</th><th></th></tr>
+{% for q in reqs %}<tr><td>{{ q.type }}: {{ q.value|tojson }}</td><td>{{ q.status }}{% if q.overridden %} <span class="meta">(you changed it from {{ q.extracted_status }})</span>{% endif %}</td>
+<td><em>“{{ q.quote[:200] }}”</em></td>
+<td><form method="post" action="/job/{{ r.source_id }}/override"><input type="hidden" name="type" value="{{ q.type }}"><input type="hidden" name="quote" value="{{ q.quote }}">
+<select name="status" aria-label="Set status">{% for s in statuses %}<option {{ 'selected' if s == q.status }}>{{ s }}</option>{% endfor %}<option value="reset">reset</option></select> <button>Set</button></form></td></tr>
+{% else %}<tr><td colspan="4" class="meta">No requirements extracted. Run <code>jobassist extract</code>.</td></tr>{% endfor %}</table>
+<h2>Advertisement text (source, unmodified)</h2>
+<pre class="src">{{ r.description_text or '(no text supplied)' }}</pre>
+{% endblock %}

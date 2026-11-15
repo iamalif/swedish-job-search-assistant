@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Brief: {{ r.title }}{% endblock %}
+{% block body %}
+<p><a href="/job/{{ r.source_id }}">← Job</a></p>
+<h1>Preparation brief</h1>
+<p>{{ b.job.title }} · {{ b.job.employer }} · <a href="{{ b.job.url }}" target="_blank" rel="noopener noreferrer">original ad</a></p>
+<p class="meta">Built only from your verified profile file. {{ b.rules|join(' ') }}</p>
+<h2>Emphasise</h2>
+<table><tr><th>Ad asks</th><th>Your evidence</th><th>How to say it</th></tr>
+{% for e in b.emphasise %}<tr><td>{{ e.ad_asks }}<br><em class="meta">“{{ e.ad_quote[:140] }}”</em></td>
+<td>{{ e.label }} <span class="meta">[{{ e.evidence_id }}, {{ e.basis }}]</span><br>{{ e.where }}{% if e.caveat %}<br><span class="meta">Caveat: {{ e.caveat }}</span>{% endif %}</td>
+<td>{{ e.how_to_say_it }}</td></tr>
+{% else %}<tr><td colspan="3" class="meta">No matched evidence. Nothing to emphasise yet.</td></tr>{% endfor %}</table>
+{% if b.projects %}<h2>Relevant projects</h2>{% for p in b.projects %}<p><strong>{{ p.title }}</strong> <span class="meta">({{ p.kind }}; relevant to {{ p.relevant_to|join(', ') }})</span><br>{{ p.summary }}<br><span class="meta">Caveat: {{ p.caveat }}</span></p>{% endfor %}{% endif %}
+<h2>Evidence gaps and barriers</h2>
+{% for g in b.gaps %}<p>{{ g.text }}{% if g.quote %}<br><em class="meta">“{{ g.quote[:160] }}”</em>{% endif %}</p>{% else %}<p class="meta">None found.</p>{% endfor %}
+<h2>Clarify before applying</h2>
+{% for g in b.clarify %}<p>{{ g.text }}{% if g.quote %}<br><em class="meta">“{{ g.quote[:160] }}”</em>{% endif %}</p>{% else %}<p class="meta">None found.</p>{% endfor %}
+<h2>Examples to prepare for interviews</h2>
+<ul>{% for i in b.interview_examples %}<li>{{ i.prepare }} <span class="meta">[{{ i.evidence_id }}, {{ i.basis }}]</span></li>{% else %}<li class="meta">None.</li>{% endfor %}</ul>
+{% endblock %}

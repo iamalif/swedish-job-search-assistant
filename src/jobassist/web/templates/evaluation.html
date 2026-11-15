@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Evaluation{% endblock %}
+{% block body %}
+<h1>Ranker evaluation</h1>
+<p class="meta">Labels: {{ res.n_pos }} worth investigating, {{ res.n_neg }} unsuitable, {{ res.n_not_sure }} not sure (ignored); {{ res.unlabelled_active }} active jobs unlabelled (unknown, not negative). One label per cross-post group. Small samples: read the intervals, not the point values.</p>
+{% if res.n_labelled < 20 %}<p class="banner">Only {{ res.n_labelled }} labelled jobs. Results are not meaningful yet; the plan targets 60–100 varied jobs.</p>{% endif %}
+<table><tr><th>Ranker</th><th>Precision among top labelled</th><th>Pairwise AUC (95% bootstrap)</th><th>Positives in bottom half</th></tr>
+{% for name, m in res.rankers.items() %}<tr><td>{{ name }}</td>
+<td>{{ m['precision@10_among_labelled'] }} (n={{ m.n_top }}, Wilson {{ m.precision_wilson95 }})</td>
+<td>{{ m.pairwise_auc }} {{ m.auc_bootstrap95 or '' }}</td>
+<td>{{ m.positives_in_bottom_half|length }}{% for x in m.positives_in_bottom_half[:5] %}<br><a href="/job/{{ x.id }}">{{ x.title }}</a> (rank {{ x.rank }}){% endfor %}</td></tr>{% endfor %}</table>
+<h2>False hard exclusions</h2>
+{% for x in res.false_hard_exclusions %}<p><a href="/job/{{ x.id }}">{{ x.title }}</a>: {{ x.reason }}</p>{% else %}<p class="meta">None among labelled jobs.</p>{% endfor %}
+<p class="meta">Category vs your label: {{ res.category_vs_label }}</p>
+{% endblock %}
